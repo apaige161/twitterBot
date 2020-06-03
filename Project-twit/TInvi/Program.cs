@@ -11,6 +11,7 @@ namespace TInvi
 {
     class Program
     {
+        //I want to print out a list of files ( pictures ) to pick from 
         static void Main(string[] args)
         {
             Console.WriteLine("Bot started");
@@ -23,7 +24,6 @@ namespace TInvi
             if ( user != null)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(user);
                 Console.WriteLine("Login Successful");
                 Console.ResetColor();
             }
@@ -33,6 +33,11 @@ namespace TInvi
                 Console.WriteLine("Could Not Login, Check Credentials");
                 Console.ResetColor();
             }
+
+
+            Console.WriteLine("\n");
+            Console.WriteLine("\n");
+
 
             //user to choose bewteen program options
             string[] UserOptions = { "Text Only Tweet", "Picture and text" };
@@ -60,17 +65,38 @@ namespace TInvi
             else if(userInput == "2")
             {
                 //publish media with a comment
-                var filePath = @"C:\Users\apaig\Pictures\TwitterPics\tree.jpg";
+
+                //user chooses picture caption
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("What would you like to say with your picture on twitter?");
+                Console.ResetColor();
+                //capture input
                 string textToTweet = Console.ReadLine();
+
+                //user picks a picture
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine(@"Enter the full file path of the picture. ex/ C:\Users\apaig\Pictures\TwitterPics\tree.jpg");
-                filePath = Console.ReadLine();
+                Console.WriteLine("\n");
+                Console.WriteLine("Choose from a list of photos");
+
+                //print file name of all pictures
+                string pathOfPics = @"C:\Users\apaig\Pictures\TwitterPics";
+                string[] files = Directory.GetFiles(pathOfPics);
+
+                for (int iFile = 0; iFile < files.Length; iFile++)
+                {
+                    string fn = new FileInfo(files[iFile]).Name;
+                    Console.WriteLine("     " + fn);
+                }
+                Console.ResetColor();
+
+                //capture input
+                string filePath = Console.ReadLine();
 
 
                 byte[] file1 = File.ReadAllBytes(filePath);
                 var media = Upload.UploadBinary(file1);
-                var tweet = Tweet.PublishTweet(textToTweet + " " + DateTime.Now, new PublishTweetOptionalParameters
+                Tweet.PublishTweet(textToTweet + " " + DateTime.Now, new PublishTweetOptionalParameters
                 {
                     Medias = new List<IMedia> { media }
                 });
@@ -82,9 +108,18 @@ namespace TInvi
 
             }
 
+
+            
+            
+
+
+
+
             Console.WriteLine("Bot ended");
 
             Console.ReadLine();
         }
+        
+
     }
 }
