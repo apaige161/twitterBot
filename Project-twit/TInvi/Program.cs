@@ -11,7 +11,13 @@ namespace TInvi
 {
     class Program
     {
-        //I want to print out a list of files ( pictures ) to pick from 
+        //schedule tasks
+
+        //search pictures by keyword
+
+
+        //@autoBot04768645 twitter account
+
         static void Main(string[] args)
         {
             Console.WriteLine("Bot started");
@@ -36,11 +42,10 @@ namespace TInvi
 
 
             Console.WriteLine("\n");
-            Console.WriteLine("\n");
 
 
             //user to choose bewteen program options
-            string[] UserOptions = { "Text Only Tweet", "Picture and text" };
+            string[] UserOptions = { "Text Only Tweet", "Picture and text", "Schedule Tweet", "Schedule picture for later" };
             int index = 1;
             Console.WriteLine("Choose an option by typing the number");
             for (int i = 0; i < UserOptions.Length; i++)
@@ -55,7 +60,7 @@ namespace TInvi
             //conditionals that accept user input
             if(userInput == "1")
             {
-                // Publish the Tweet "text" on your Timeline
+                /************************publish the Tweet "text" on your Timeline**************************/
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("What would you like to say on twitter?");
                 Console.ResetColor();
@@ -64,8 +69,49 @@ namespace TInvi
             }
             else if(userInput == "2")
             {
-                //publish media with a comment
+                /**************************publish media with a comment*******************************/
 
+                /******user picks a picture******/
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("Select the number of the picture you want to post");
+                Console.WriteLine("\n");
+                Console.WriteLine("Choose from a list of photos");
+                Console.ResetColor();
+
+                /******working with the files******/
+                //set color of files
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+
+                //print file name of all pictures
+                string pathOfPics = @"C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\twitterImg";
+                //puts each file into the array
+                string[] files = Directory.GetFiles(pathOfPics);
+
+                //find file name and add to list
+                List<string> fileNames = new List<string>();
+                for (int iFile = 0; iFile < files.Length; iFile++)
+                {
+                    //grabs each file name
+                    string fn = new FileInfo(files[iFile]).Name;
+                    //and adds it to the list
+                    fileNames.Add(fn);
+                }
+
+                //write file names to console
+                for (int i = 0; i < fileNames.Count; i++)
+                {
+                    Console.WriteLine(i + 1 + ") " + fileNames[i]);
+                }
+                Console.ResetColor();
+
+                //user input : picture number
+                string userChoicePicture = Console.ReadLine();
+                //convert string to int && -1 to grab actual index
+                int realUserChoice = Convert.ToInt32(userChoicePicture) - 1;
+                //full path of a file selected
+                string filePath = pathOfPics + @"\" + fileNames[realUserChoice].ToString();
+                
                 //user chooses picture caption
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("What would you like to say with your picture on twitter?");
@@ -73,33 +119,22 @@ namespace TInvi
                 //capture input
                 string textToTweet = Console.ReadLine();
 
-                //user picks a picture
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine(@"Enter the full file path of the picture. ex/ C:\Users\apaig\Pictures\TwitterPics\tree.jpg");
-                Console.WriteLine("\n");
-                Console.WriteLine("Choose from a list of photos");
-
-                //print file name of all pictures
-                string pathOfPics = @"C:\Users\apaig\Pictures\TwitterPics";
-                string[] files = Directory.GetFiles(pathOfPics);
-
-                for (int iFile = 0; iFile < files.Length; iFile++)
-                {
-                    string fn = new FileInfo(files[iFile]).Name;
-                    Console.WriteLine("     " + fn);
-                }
-                Console.ResetColor();
-
-                //capture input
-                string filePath = Console.ReadLine();
-
-
+                /**************************send tweet*******************************/
+                //exception unhandled if no input
                 byte[] file1 = File.ReadAllBytes(filePath);
                 var media = Upload.UploadBinary(file1);
                 Tweet.PublishTweet(textToTweet + " " + DateTime.Now, new PublishTweetOptionalParameters
                 {
                     Medias = new List<IMedia> { media }
                 });
+            }
+            else if (userInput == "3")
+            {
+                /**************************schedule a tweet*******************************/
+            }
+            else if (userInput == "4")
+            {
+                /**************************schedule a picture*******************************/
             }
             else
             {
