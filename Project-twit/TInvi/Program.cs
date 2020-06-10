@@ -16,7 +16,7 @@ namespace TInvi
     {
         //schedule tasks
             //calculate a new time -done
-            //post a new tweet on that new time
+            //post a new tweet on that new time -done
 
 
         //@autoBot04768645 twitter account
@@ -77,7 +77,6 @@ namespace TInvi
 
                 /******promt user to pick a picture******/
                 Console.Write("INSTRUCTIONS: ");
-                
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Select the picture you want to post");
                 Console.WriteLine("\n");
@@ -124,8 +123,6 @@ namespace TInvi
                     Console.ResetColor();
                     Console.WriteLine("\n");
                 }
-
-
 
 
                 /******search picture files******/
@@ -209,7 +206,7 @@ namespace TInvi
 
 
 
-                /**************************send picture tweet*******************************/
+                /*********send picture tweet**********/
                 //exception unhandled if no input
                 byte[] file1 = File.ReadAllBytes(filePath);
                 var media = Upload.UploadBinary(file1);
@@ -257,8 +254,8 @@ namespace TInvi
                 Console.ResetColor();
                 string textToTweet = Console.ReadLine();
 
-                
-                /*  
+
+                /*  timeCompare:
                  *  <0 − If date1 is earlier than date2
                     0 − If date1 is the same as date2
                     >0 − If date1 is later than date2
@@ -269,7 +266,7 @@ namespace TInvi
                 {
                     //end while loop, should end when timeCompare is changed
                     Console.WriteLine("It is not time to post yet, the program will try again in 30 seconds...");
-                    System.Threading.Thread.Sleep(30000);   //sleep for 60 seconds
+                    Thread.Sleep(30000);   //sleep for 60 seconds
                     timeCompare = DateTime.Compare(newTime, DateTime.Now);
                     Console.WriteLine($"{timeCompare} ");
 
@@ -279,6 +276,7 @@ namespace TInvi
                     }
                 }
 
+                /*****post tweet******/
                 //runs program
                 if (timeCompare < 0) //currentTime is later than addTime
                 {
@@ -287,36 +285,79 @@ namespace TInvi
                 }
                 
 
-                
+            }   //tweet later
 
-                /*****post tweet******/
+            else if (userInput == "4")
+            {
+                //add media to text tweet
 
-                
-                
+                /**************************schedule a tweet*******************************/
+                DateTime currentTime = DateTime.Now;
+                Console.WriteLine("You will post a tweet at a later date");
+                Console.WriteLine("How many days do you want to wait?");
+                int userAddDays = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("How many hours do you want to wait?");
+                int userAddHours = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("How many minutes do you want to wait?");
+                int userAddMinutes = Convert.ToInt32(Console.ReadLine());
+
+                /***********************add time to the current time************************/
+
+                //get current time
+                Console.WriteLine("Current time = {0}", currentTime);
+
+                //add days, hours, minutes
+                DateTime newTime = DateTime.Now
+                    .AddDays(userAddDays)
+                    .AddHours(userAddHours)
+                    .AddMinutes(userAddMinutes);
+
+                //print time of scheduled post
+                Console.WriteLine("Your tweet will be published at " + newTime);
+
+                /*****compare times******/
+
+                //datetime compare
+                int timeCompare = DateTime.Compare(newTime, currentTime);
+                Console.WriteLine(timeCompare + " newTime, currentTime"); //1 if the added time is later than now
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("What would you like to say on twitter?");
+                Console.ResetColor();
+                string textToTweet = Console.ReadLine();
 
 
-                while (newTime > currentTime)
+                /*  timeCompare:
+                 *  <0 − If date1 is earlier than date2
+                    0 − If date1 is the same as date2
+                    >0 − If date1 is later than date2
+                */
+
+                //waits until time == user added time
+                while (timeCompare > 0) //addTime is later than currentTime
                 {
-                    Console.WriteLine("It is not time to post yet, the program will try again in 60 seconds...");
-                    System.Threading.Thread.Sleep(60000);   //sleep for 60 seconds
-                    if (newTime <= currentTime)
+                    //end while loop, should end when timeCompare is changed
+                    Console.WriteLine("It is not time to post yet, the program will try again in 30 seconds...");
+                    Thread.Sleep(30000);   //sleep for 60 seconds
+                    timeCompare = DateTime.Compare(newTime, DateTime.Now);
+                    Console.WriteLine($"{timeCompare} ");
+
+                    if (timeCompare < 0)
                     {
                         break;
                     }
                 }
 
-                
+                /*****post tweet******/
+                //runs program
+                if (timeCompare < 0) //currentTime is later than addTime
+                {
+                    Tweet.PublishTweet(textToTweet + " " + DateTime.Now);
+                    Console.WriteLine("Tweet Should have sent at " + DateTime.Now);
+                }
 
-                
-                
 
-
-            }   //tweet later
-
-            else if (userInput == "4")
-            {
-                /**************************schedule a picture*******************************/
-                Console.WriteLine("Schedule a tweet with a picture for later?");
             }   //tweet media later
 
             else
