@@ -9,14 +9,19 @@ using System.Threading.Tasks;
 using Tweetinvi;
 using Tweetinvi.Models;
 using Tweetinvi.Parameters;
+using System.Diagnostics;
 
 namespace TInvi
 {
     class Program
     {
         //schedule tasks
-            //calculate a new time -done
-            //post a new tweet on that new time -done
+        //calculate a new time -done
+        //post a new tweet on that new time -done
+
+        //talk to another program
+        //System.Diagnostics.Process.Start("path to other .exe", params);
+        //need newTime, 
 
 
         //@autoBot04768645 twitter account
@@ -230,6 +235,12 @@ namespace TInvi
                 Console.WriteLine("How many minutes do you want to wait?");
                 int userAddMinutes = Convert.ToInt32(Console.ReadLine());
 
+                //get user info
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("What would you like to say on twitter?");
+                Console.ResetColor();
+                string textToTweet = Console.ReadLine();
+
                 /***********************add time to the current time************************/
 
                 //get current time
@@ -244,46 +255,13 @@ namespace TInvi
                 //print time of scheduled post
                 Console.WriteLine("Your tweet will be published at " + newTime);
 
-                /*****compare times******/
 
-                //datetime compare
-                int timeCompare = DateTime.Compare(newTime, currentTime);
-                Console.WriteLine(timeCompare + " newTime, currentTime"); //1 if the added time is later than now
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("What would you like to say on twitter?");
-                Console.ResetColor();
-                string textToTweet = Console.ReadLine();
+                /**********start helper program************/
+                ProcessStartInfo startInfo = new ProcessStartInfo(Sensitive.Helper);
 
+                startInfo.Arguments = string.Format("\"{0}\" {1} {2} {3}", textToTweet, newTime, newTime, newTime);
 
-                /*  timeCompare:
-                 *  <0 − If date1 is earlier than date2
-                    0 − If date1 is the same as date2
-                    >0 − If date1 is later than date2
-                */
-
-                //waits until time == user added time
-                while (timeCompare > 0) //addTime is later than currentTime
-                {
-                    //end while loop, should end when timeCompare is changed
-                    Console.WriteLine("It is not time to post yet, the program will try again in 30 seconds...");
-                    Thread.Sleep(30000);   //sleep for 60 seconds
-                    timeCompare = DateTime.Compare(newTime, DateTime.Now);
-                    Console.WriteLine($"{timeCompare} ");
-
-                    if (timeCompare < 0)
-                    {
-                        break;
-                    }
-                }
-
-                /*****post tweet******/
-                //runs program
-                if (timeCompare < 0) //currentTime is later than addTime
-                {
-                        Tweet.PublishTweet(textToTweet + " " + DateTime.Now);
-                        Console.WriteLine("Tweet Should have sent at " + DateTime.Now);
-                }
-                
+                Process.Start(startInfo);
 
             }   //tweet later
 

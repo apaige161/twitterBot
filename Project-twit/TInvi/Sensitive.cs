@@ -10,6 +10,14 @@ namespace TInvi
     {
         //login keys
         private static string api_key = "uTj4unXn3hz7JHSoM4chDYTTJ";
+
+        private static string pathOfHelperProgram = @"C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\talkToTInvi\bin\Debug\talkToTInvi.exe";
+        //sets the path so it is easier to work with
+        public static string Helper
+        {
+            get { return pathOfHelperProgram;  }
+            set { pathOfHelperProgram = value; }
+        }
         public static string apikey
         {
             get { return api_key; }
