@@ -14,8 +14,8 @@ Reach out to me through slack or email (apaige161@gmail.com) to get the api key 
   -The program will run but you will see red text to check credentials or internet connections via the console
 
 Things left to do: 
-  1. ability to tweet with media later using the same helper program --done
-  2. instead of full file paths modify them to relative file paths from the github file tree
+  1. instead of full file paths modify them to relative file paths from the github file tree
+  2. open chrome to www.twitter.com/@autoBot04768645 USE: ProcessInfoStart()
   3. add a search for tweets function/ retweet
   4. add a web scrapper?? 
       -unclear what I would do with a web scrapper as of now but it sounds like it could be pretty sweet
