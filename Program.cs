@@ -15,12 +15,20 @@ namespace TInvi
 {
     class Program
     {
-        //TODO: add a file for passwords
         //TODO: fix reference for talkToTInvi
         //TODO fix reference for passwords(api keys) file
+        //TODO: close api_keys file??
 
 
-        //@autoBot04768645 twitter account
+
+        // directs user to browser at twitter.com
+        public static void OpenWithArguments()
+        {
+            // url's are not considered documents. They can only be opened
+            // by passing them as arguments.
+            Process.Start("Chrome.exe", "http://www.twitter.com/@autoBot04768645");
+        }
+
 
         static void Main(string[] args)
         {
@@ -62,17 +70,18 @@ namespace TInvi
 
 
             //program options
-            string[] UserOptions = { "Text Only Tweet", "Picture and Text Tweet", "Schedule Tweet for later", "Schedule Media Tweet for later" };
-            int index = 1;
+            string[] UserOptions = { "Text Only Tweet", 
+                                     "Picture and Text Tweet", 
+                                     "Schedule Tweet for later", 
+                                     "Schedule Media Tweet for later" };
+
             Console.WriteLine("Choose an option by typing the number");
             for (int i = 0; i < UserOptions.Length; i++)
             {
-                Console.WriteLine(index + "). " + UserOptions[i]);
-                index++;
-            }
+                Console.WriteLine(i + 1 + "). " + UserOptions[i]);
+            } //display menu
             Console.WriteLine("\n");
 
-            //get user input
             string userInput = Console.ReadLine();
             Console.WriteLine("\n");
 
@@ -85,7 +94,17 @@ namespace TInvi
                 Console.ResetColor();
                 string textToTweet = Console.ReadLine();
                 Tweet.PublishTweet(textToTweet);
-            }   //tweet
+
+                //check twitter
+                Console.WriteLine("Would you like to check twitter to make sure? Enter Yes or No");
+                string checkTwitter = Console.ReadLine();
+                if(checkTwitter.ToLower() == "yes" || checkTwitter.ToLower() == "y")
+                {
+                    //opens chrome to twitter page
+                    OpenWithArguments();
+                }
+
+                }   //tweet
 
             else if(userInput == "2")
             {
@@ -246,6 +265,16 @@ namespace TInvi
                 {
                     Medias = new List<IMedia> { media }
                 });
+
+                //check twitter
+                Console.WriteLine("Would you like to check twitter to make sure? Enter Yes or No");
+                string checkTwitter = Console.ReadLine();
+                if (checkTwitter.ToLower() == "yes" || checkTwitter.ToLower() == "y")
+                {
+                    //opens chrome to twitter page
+                    OpenWithArguments();
+                }
+
             }   // tweet media
 
             else if (userInput == "3")
@@ -292,6 +321,7 @@ namespace TInvi
                 startInfo.Arguments = string.Format("{0} \"{1}\" {2} {3} {4}", userInput, textToTweet, newTime, newTime, newTime);
 
                 Process.Start(startInfo);
+
 
             }   //tweet later
 
