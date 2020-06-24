@@ -135,6 +135,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="api_keys.txt" />
     <Content Include="twitterImg\babyLamb.jpg" />
     <Content Include="twitterImg\bannana.jpg" />
     <Content Include="twitterImg\barn.jpg" />
