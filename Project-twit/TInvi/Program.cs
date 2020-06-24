@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace TInvi
 {
-    //this is nothing
+    //this is nothing th
     class Program
     {
         //TODO: fix reference for talkToTInvi

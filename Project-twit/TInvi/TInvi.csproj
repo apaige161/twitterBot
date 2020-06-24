@@ -181,5 +181,8 @@
     <Content Include="twitterImg\woodBarn.jpg" />
     <Content Include="twitterImg\zebra.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="talkToTInvi\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
