@@ -15,28 +15,45 @@ namespace TInvi
 {
     class Program
     {
-        //schedule tasks
-        //calculate a new time -done
-        //post a new tweet on that new time -done
-
-        //talk to another program
-        //System.Diagnostics.Process.Start("path to other .exe", params);
-        //need newTime, 
+        //TODO: fix reference for talkToTInvi
+        //TODO: close api_keys file??
 
 
-        //@autoBot04768645 twitter account
+
+        // directs user to browser at twitter.com
+        public static void OpenChrome()
+        {
+            // url's are not considered documents. They can only be opened
+            // by passing them as arguments.
+            Process.Start("Chrome.exe", "http://www.twitter.com/@autoBot04768645");
+        }
+
 
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Bot started");
 
+            /***login***/
+
+            //read passwords from file here using your own file path
+
+            string pathOfApiKeys = @"C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\api_keys.txt";
+
+            //read file and put contents into array
+            string[] allKeys = File.ReadAllLines(pathOfApiKeys);
+
+            string ApiKey = allKeys[0];
+            string ApiKeySecret = allKeys[1];
+            string AccessToken = allKeys[2];
+            string AccessTokenSecret = allKeys[3];
+
             // Set up your credentials (https://apps.twitter.com)
-            Auth.SetUserCredentials(Sensitive.apikey, Sensitive.apikeySecret, Sensitive.accesstoken, Sensitive.accesstokenSecret);
+            Auth.SetUserCredentials(ApiKey, ApiKeySecret, AccessToken, AccessTokenSecret);
 
             //Login
             var user = User.GetAuthenticatedUser();
-            if ( user != null)
+            if (user != null)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Login Successful");
@@ -45,24 +62,25 @@ namespace TInvi
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Could Not Login, Check Credentials");
+                Console.WriteLine("Could Not Login, Check Credentials or Internet Connection");
                 Console.ResetColor();
             }
             Console.WriteLine("\n");
 
 
             //program options
-            string[] UserOptions = { "Text Only Tweet", "Picture and Text Tweet", "Schedule Tweet for later", "Schedule Media Tweet for later" };
-            int index = 1;
+            string[] UserOptions = { "Text Only Tweet",
+                                     "Picture and Text Tweet",
+                                     "Schedule Tweet for later",
+                                     "Schedule Media Tweet for later" };
+
             Console.WriteLine("Choose an option by typing the number");
             for (int i = 0; i < UserOptions.Length; i++)
             {
-                Console.WriteLine(index + "). " + UserOptions[i]);
-                index++;
-            }
+                Console.WriteLine(i + 1 + "). " + UserOptions[i]);
+            } //display menu
             Console.WriteLine("\n");
 
-            //get user input
             string userInput = Console.ReadLine();
             Console.WriteLine("\n");
 
@@ -74,10 +92,20 @@ namespace TInvi
                 Console.WriteLine("What would you like to say on twitter?");
                 Console.ResetColor();
                 string textToTweet = Console.ReadLine();
-                Tweet.PublishTweet(textToTweet + " " + DateTime.Now);
+                Tweet.PublishTweet(textToTweet);
+
+                //check twitter
+                Console.WriteLine("Would you like to check twitter to make sure? Select: Yes or No");
+                string checkTwitter = Console.ReadLine();
+                if (checkTwitter.ToLower() == "yes" || checkTwitter.ToLower() == "y")
+                {
+                    //opens chrome to twitter page
+                    OpenChrome();
+                }
+
             }   //tweet
 
-            else if(userInput == "2")
+            else if (userInput == "2")
             {
                 /**************************publish media with a caption*******************************/
 
@@ -93,7 +121,7 @@ namespace TInvi
                 //must be in .jpg
 
                 /******file name of all pictures******/
-                string pathOfPics = @"C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\twitterImg";
+                string pathOfPics = @".\twitterImg";
                 //gets each file in directory
                 string[] files = Directory.GetFiles(pathOfPics);
 
@@ -102,7 +130,7 @@ namespace TInvi
                 for (int iFile = 0; iFile < files.Length; iFile++)
                 {
                     //grabs each file name
-                    string fn = new FileInfo(files[iFile]).Name;      
+                    string fn = new FileInfo(files[iFile]).Name;
                     //and adds it to the list
                     fileNames.Add(fn);
                 } //grabs each file name
@@ -115,7 +143,7 @@ namespace TInvi
                 string showAllPictureNames = Console.ReadLine();
                 Console.WriteLine("\n");
 
-                if(showAllPictureNames == "yes" || showAllPictureNames == "" || showAllPictureNames == "y")
+                if (showAllPictureNames == "yes" || showAllPictureNames == "" || showAllPictureNames == "y")
                 {
                     //set color of files
                     Console.BackgroundColor = ConsoleColor.White;
@@ -205,7 +233,7 @@ namespace TInvi
                 /******select picture files******/
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Select the picture by entering the number to the left of it");
-                
+
                 Console.ResetColor();
 
 
@@ -213,7 +241,7 @@ namespace TInvi
                 string userChoicePicture = Console.ReadLine();
                 //convert string to int && -1 to grab actual index
                 int realUserChoice = Convert.ToInt32(userChoicePicture) - 1;
-                
+
                 //full path of a file selected
                 string filePath = pathOfPics + @"\" + fileNames[realUserChoice].ToString();
 
@@ -236,12 +264,22 @@ namespace TInvi
                 {
                     Medias = new List<IMedia> { media }
                 });
+
+                //check twitter
+                Console.WriteLine("Would you like to check twitter to make sure? Select: Yes or No");
+                string checkTwitter = Console.ReadLine();
+                if (checkTwitter.ToLower() == "yes" || checkTwitter.ToLower() == "y")
+                {
+                    //opens chrome to twitter page
+                    OpenChrome();
+                }
+
             }   // tweet media
 
             else if (userInput == "3")
             {
                 /**************************schedule a tweet*******************************/
-                
+
                 DateTime currentTime = DateTime.Now;
                 Console.WriteLine("You will post a tweet at a later date");
                 Console.WriteLine("How many days do you want to wait?");
@@ -276,11 +314,16 @@ namespace TInvi
 
                 /**********start helper program************/
                 //pass in the path of the helper program
-                ProcessStartInfo startInfo = new ProcessStartInfo(Sensitive.Helper);
+                string pathOfHelperProgram = @"..\talkToTInvi\talkToTInvi.exe";
+                //C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\talkToTInvi\bin\Debug\talkToTInvi.exe
+                ProcessStartInfo startInfo = new ProcessStartInfo(pathOfHelperProgram);
 
+
+                //TODO: string interpolation
                 startInfo.Arguments = string.Format("{0} \"{1}\" {2} {3} {4}", userInput, textToTweet, newTime, newTime, newTime);
 
                 Process.Start(startInfo);
+
 
             }   //tweet later
 
@@ -316,7 +359,7 @@ namespace TInvi
                 /******working with the picture files (must be in .jpg)******/
 
                 /**file name of all pictures**/
-                string pathOfPics = @"C:\Users\apaig\Documents\VSRepo\Project-twit\TInvi\twitterImg";
+                string pathOfPics = @".\twitterImg";
                 //gets each file in directory
                 string[] files = Directory.GetFiles(pathOfPics);
 
@@ -400,7 +443,7 @@ namespace TInvi
                                 //prints out files containing that keyword
                                 Console.WriteLine(i + 1 + ") " + fileNames[i]);
                             }
-                            
+
                         }
 
                         //when no results are found, print a message
@@ -421,9 +464,9 @@ namespace TInvi
                         Console.WriteLine("\n");
                     }
                 }
-                else if(userSearch == "no" || userSearch == "n")
+                else if (userSearch == "no" || userSearch == "n")
                 {
-                    
+
                 }
                 else
                 {
@@ -462,7 +505,7 @@ namespace TInvi
                     .AddDays(userAddDays)
                     .AddHours(userAddHours)
                     .AddMinutes(userAddMinutes);
-                
+
 
                 /**********start helper program************/
                 //pass in the path of the helper program
@@ -495,6 +538,6 @@ namespace TInvi
             Console.ReadLine();
         }
 
-        
+
     }
 }
